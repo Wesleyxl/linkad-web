@@ -15,6 +15,10 @@
     "comma-dangle": "off",
     "@typescript-eslint/comma-dangle": "off",
     "@typescript-eslint/space-before-function-paren": "off",
+    "@typescript-eslint/no-misused-promises": "off",
+    "@typescript-eslint/strict-boolean-expressions": "off",
+    "@typescript-eslint/member-delimiter-style": "off",
+    "no-useless-catch": "off",
     "import-helpers/order-imports": [
       "warn",
       {

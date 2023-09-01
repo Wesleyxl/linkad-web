@@ -2,6 +2,7 @@ import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 import React from "react";
 
+import { authRoutes } from "../../api";
 import logo from "../../assets/logo/logo.png";
 import {
   Container,
@@ -17,13 +18,13 @@ const Login: React.FC = () => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
 
-  function handleSubmit(e: React.FormEvent): void {
+  async function handleSubmit(e: React.FormEvent): Promise<void> {
     e.preventDefault();
 
-    console.log({
-      email,
-      password,
-    });
+    // response api
+    const response: any = await authRoutes.login(email, password);
+
+    console.log(response);
   }
 
   return (
