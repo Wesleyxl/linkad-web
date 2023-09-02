@@ -1,9 +1,10 @@
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
-import { Button } from "antd";
-import React from "react";
+import { Alert, Button } from "antd";
+import React, { useState } from "react";
 
 import { authRoutes } from "../../api";
 import logo from "../../assets/logo/logo.png";
+import { login } from "../../services/auth";
 import {
   Container,
   LoginArea,
@@ -15,16 +16,36 @@ import {
 
 const Login: React.FC = () => {
   // inputs states
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  // error and login
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent): Promise<void> {
     e.preventDefault();
+    setLoading(true);
+    setError(false);
 
     // response api
     const response: any = await authRoutes.login(email, password);
 
-    console.log(response);
+    if (response.errors) {
+      setLoading(false);
+      setError(response.errors);
+    } else {
+      const { access_token } = response;
+
+      const user: any = await authRoutes.me(access_token);
+
+      if (user.errors) {
+        setLoading(false);
+        setError(response.errors);
+      } else {
+        await login(user, access_token);
+      }
+    }
   }
 
   return (
@@ -32,6 +53,7 @@ const Login: React.FC = () => {
       <Logo>
         <img src={logo} alt="Linkad" title="Linkad" />
       </Logo>
+      {error ? <Alert message={error} type="error" /> : null}
       <LoginArea>
         <form onSubmit={handleSubmit}>
           <TextInput
@@ -59,8 +81,13 @@ const Login: React.FC = () => {
               Forgot your password? <a href="/forgot-password">Reset</a>
             </small>
           </p>
-          <Button htmlType="submit" type="primary" style={{ width: "100%" }}>
-            Login
+          <Button
+            disabled={loading}
+            htmlType="submit"
+            type="primary"
+            style={{ width: "100%" }}
+          >
+            {loading ? "Loading..." : "Login"}
           </Button>
 
           <OtherLinks>

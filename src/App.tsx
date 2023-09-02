@@ -3,6 +3,7 @@ import { BrowserRouter, Routes as Switch, Route } from "react-router-dom";
 
 import Home from "./pages/Home";
 import Login from "./pages/Login";
+import { PrivateRoute, UnPrivateRoute } from "./services/RoutesMiddleware";
 import GlobalStyle from "./styles/GlobalStyle";
 
 const App: React.FC = () => {
@@ -11,8 +12,12 @@ const App: React.FC = () => {
       <GlobalStyle />
 
       <Switch>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/" element={<PrivateRoute />}>
+          <Route path="/" element={<Home />} />
+        </Route>
+        <Route path="/" element={<UnPrivateRoute />}>
+          <Route path="/login" element={<Login />} />
+        </Route>
       </Switch>
     </BrowserRouter>
   );

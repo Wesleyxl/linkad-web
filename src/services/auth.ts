@@ -1,9 +1,3 @@
-/**
- * Validates a token.
- *
- * @param {string} token - The token to be validated.
- * @return {Promise<boolean>} A boolean indicating whether the token is valid.
- */
 export const validateToken = async (token: string): Promise<boolean | any> => {
   const invalidTokens = ["Unauthorized", "Token is Invalid", "Token not found"];
 
@@ -12,6 +6,15 @@ export const validateToken = async (token: string): Promise<boolean | any> => {
   }
 
   return true;
+};
+
+export const login = async (
+  user: object,
+  access_token: string
+): Promise<void> => {
+  localStorage.setItem("access_token", access_token);
+  localStorage.setItem("user", JSON.stringify(user));
+  window.location.href = "/";
 };
 
 export const logout = async (): Promise<void> => {

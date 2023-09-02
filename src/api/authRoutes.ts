@@ -10,7 +10,20 @@ export default {
         password,
       })
       .then((response) => response.data)
-      .catch((error) => error);
+      .catch((error) => error.response.data);
+
+    return response;
+  },
+
+  me: async (access_token: string) => {
+    const response: AxiosResponse = await instancePublic
+      .get("/auth/me", {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      })
+      .then((response) => response.data)
+      .catch((error) => error.response.data);
 
     return response;
   },
