@@ -9,7 +9,7 @@ export default createGlobalStyle`
   }
 
   body {
-    background: #f0f0f5;
+    background: #f3f2f0;
     -webkit-font-smoothing: antialiased;
     color: #000;
     font-family: 'Urbanist', sans-serif;

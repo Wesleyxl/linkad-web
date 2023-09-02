@@ -1,10 +1,10 @@
+/* eslint-disable multiline-ternary */
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { Alert, Button } from "antd";
 import React, { useState } from "react";
 
 import { authRoutes } from "../../api";
 import logo from "../../assets/logo/logo.png";
-import { login } from "../../services/auth";
 import {
   Container,
   LoginArea,
@@ -14,38 +14,38 @@ import {
   TextInput,
 } from "./styles";
 
-const Login: React.FC = () => {
+const Register: React.FC = () => {
   // inputs states
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
 
-  // error and login
+  // error, loading and success
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   async function handleSubmit(e: React.FormEvent): Promise<void> {
     e.preventDefault();
     setLoading(true);
     setError(false);
+    setSuccess(false);
 
     // response api
-    const response: any = await authRoutes.login(email, password);
+    const response: any = await authRoutes.register(name, email, password);
 
-    if (response.errors) {
-      setLoading(false);
-      setError(response.errors);
-    } else {
-      const { access_token } = response;
+    console.log(response);
 
-      const user: any = await authRoutes.me(access_token);
-
-      if (user.errors) {
-        setLoading(false);
-        setError(response.errors);
-      } else {
-        await login(user, access_token);
-      }
-    }
+    // if (response.errors) {
+    //   setLoading(false);
+    //   setError(response.errors);
+    // } else {
+    //   setSuccess(true);
+    //   setTimeout(function () {
+    //     window.location.href = "/login";
+    //   }, 5000);
+    // }
   }
 
   return (
@@ -53,12 +53,25 @@ const Login: React.FC = () => {
       <Logo>
         <img src={logo} alt="Linkad" title="Linkad" />
       </Logo>
-      {error ? <Alert message={error} type="error" /> : null}
+      {error ? <Alert message={"message error aqui "} type="error" /> : null}
+      {success ? (
+        <Alert message="User created successfully" type="success" />
+      ) : null}
       <LoginArea>
         <h3 style={{ alignSelf: "start", marginBottom: 10 }}>
-          Login to your account
+          Register as a new user
         </h3>
         <form onSubmit={handleSubmit}>
+          <TextInput
+            id="name"
+            name="name"
+            placeholder="Full name"
+            prefix={<UserOutlined />}
+            onChange={(e) => {
+              setName(e.target.value);
+            }}
+            value={name}
+          />
           <TextInput
             id="email"
             name="email"
@@ -69,6 +82,7 @@ const Login: React.FC = () => {
             }}
             value={email}
           />
+
           <PasswordInput
             id="password"
             name="password"
@@ -79,11 +93,17 @@ const Login: React.FC = () => {
             }}
             value={password}
           />
-          <p style={{ margin: "15px 0" }}>
-            <small>
-              Forgot your password? <a href="/forgot-password">Reset</a>
-            </small>
-          </p>
+          <PasswordInput
+            id="password-confirm"
+            name="password-confirm"
+            placeholder="Confirm your Password"
+            prefix={<LockOutlined />}
+            onChange={(e) => {
+              setPasswordConfirm(e.target.value);
+            }}
+            value={passwordConfirm}
+          />
+
           <Button
             disabled={loading}
             htmlType="submit"
@@ -96,7 +116,7 @@ const Login: React.FC = () => {
           <OtherLinks>
             <p style={{ margin: "15px 0", textAlign: "end" }}>
               <small>
-                Not a member yet? <a href="/register">Register</a>
+                do you have an account? <a href="/login">Login</a>
               </small>
             </p>
 
@@ -123,4 +143,4 @@ const Login: React.FC = () => {
   );
 };
 
-export default Login;
+export default Register;

@@ -15,6 +15,19 @@ export default {
     return response;
   },
 
+  register: async (name: string, email: string, password: string) => {
+    const response: AxiosResponse = await instancePublic
+      .post("/auth/register", {
+        name,
+        email,
+        password,
+      })
+      .then((response) => response.data)
+      .catch((error) => error.response.data);
+
+    return response;
+  },
+
   me: async (access_token: string) => {
     const response: AxiosResponse = await instancePublic
       .get("/auth/me", {
