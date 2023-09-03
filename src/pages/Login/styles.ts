@@ -36,7 +36,7 @@ export const LoginArea = styled.div`
   border-radius: 15px;
   width: 100%;
   max-width: 350px;
-  padding: 50px 15px;
+  padding: 30px 15px 50px;
   display: flex;
   flex-direction: column;
   justify-content: center;

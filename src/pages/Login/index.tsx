@@ -53,13 +53,14 @@ const Login: React.FC = () => {
       <Logo>
         <img src={logo} alt="Linkad" title="Linkad" />
       </Logo>
-      {error ? <Alert message={error} type="error" /> : null}
       <LoginArea>
-        <h3 style={{ alignSelf: "start", marginBottom: 10 }}>
+        {error ? <Alert message={error} type="error" /> : null}
+        <h3 style={{ alignSelf: "start", margin: "10px 0" }}>
           Login to your account
         </h3>
         <form onSubmit={handleSubmit}>
           <TextInput
+            status={error ? "error" : ""}
             id="email"
             name="email"
             placeholder="Your Email"
@@ -70,6 +71,7 @@ const Login: React.FC = () => {
             value={email}
           />
           <PasswordInput
+            status={error ? "error" : ""}
             id="password"
             name="password"
             placeholder="You Password"

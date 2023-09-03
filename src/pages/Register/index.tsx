@@ -14,6 +14,11 @@ import {
   TextInput,
 } from "./styles";
 
+interface ErrorMessage {
+  title: string;
+  message: string;
+}
+
 const Register: React.FC = () => {
   // inputs states
   const [name, setName] = useState("");
@@ -22,30 +27,34 @@ const Register: React.FC = () => {
   const [passwordConfirm, setPasswordConfirm] = useState("");
 
   // error, loading and success
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<ErrorMessage[] | undefined>();
   const [loading, setLoading] = useState(false);
+  const [passwordConfirmError, setPasswordConfirmError] = useState(false);
   const [success, setSuccess] = useState(false);
 
   async function handleSubmit(e: React.FormEvent): Promise<void> {
     e.preventDefault();
     setLoading(true);
-    setError(false);
-    setSuccess(false);
+    setPasswordConfirmError(false);
+    setError(undefined);
 
-    // response api
-    const response: any = await authRoutes.register(name, email, password);
+    if (password !== passwordConfirm) {
+      setLoading(false);
+      setPasswordConfirmError(true);
+    } else {
+      // response api
+      const response: any = await authRoutes.register(name, email, password);
 
-    console.log(response);
-
-    // if (response.errors) {
-    //   setLoading(false);
-    //   setError(response.errors);
-    // } else {
-    //   setSuccess(true);
-    //   setTimeout(function () {
-    //     window.location.href = "/login";
-    //   }, 5000);
-    // }
+      if (response.errors) {
+        setLoading(false);
+        setError(response.errors);
+      } else {
+        setSuccess(true);
+        setTimeout(() => {
+          window.location.href = "/login";
+        }, 3000);
+      }
+    }
   }
 
   return (
@@ -53,16 +62,19 @@ const Register: React.FC = () => {
       <Logo>
         <img src={logo} alt="Linkad" title="Linkad" />
       </Logo>
-      {error ? <Alert message={"message error aqui "} type="error" /> : null}
-      {success ? (
-        <Alert message="User created successfully" type="success" />
-      ) : null}
       <LoginArea>
-        <h3 style={{ alignSelf: "start", marginBottom: 10 }}>
+        {error ? (
+          <Alert message="Error: Verify the fields" type="error" />
+        ) : null}
+        {success ? (
+          <Alert message="User successfully registered" type="success" />
+        ) : null}
+        <h3 style={{ alignSelf: "start", margin: "10px 0" }}>
           Register as a new user
         </h3>
         <form onSubmit={handleSubmit}>
           <TextInput
+            status={error?.some((e) => e.title === "name") ? "error" : ""}
             id="name"
             name="name"
             placeholder="Full name"
@@ -72,7 +84,15 @@ const Register: React.FC = () => {
             }}
             value={name}
           />
+          {error?.some((e) => e.title === "name") ? (
+            <div style={{ margin: "-5px 0 10px 0" }}>
+              <small style={{ color: "red" }}>
+                {error?.some((e) => (e.title === "name" ? e.message : ""))}
+              </small>
+            </div>
+          ) : null}
           <TextInput
+            status={error?.some((e) => e.title === "email") ? "error" : ""}
             id="email"
             name="email"
             placeholder="Your Email"
@@ -84,6 +104,7 @@ const Register: React.FC = () => {
           />
 
           <PasswordInput
+            status={error?.some((e) => e.title === "password") ? "error" : ""}
             id="password"
             name="password"
             placeholder="You Password"
@@ -94,6 +115,7 @@ const Register: React.FC = () => {
             value={password}
           />
           <PasswordInput
+            status={passwordConfirmError ? "error" : ""}
             id="password-confirm"
             name="password-confirm"
             placeholder="Confirm your Password"
@@ -103,6 +125,11 @@ const Register: React.FC = () => {
             }}
             value={passwordConfirm}
           />
+          {passwordConfirmError ? (
+            <div style={{ margin: "-5px 0 10px 0" }}>
+              <small style={{ color: "red" }}>Passwords do not match</small>
+            </div>
+          ) : null}
 
           <Button
             disabled={loading}
